@@ -1,6 +1,6 @@
 # slack-app-template
 
-This is a basic app for working with Slack interactions and the Slack Web API. The current implementation posts back "Hello, world!" to the user for any interaction.
+This is a basic app for working with Slack interactions and the Slack Web API. The current implementation posts back "Hello, [your name]!" in response to any interaction.
 
 ## Running the App
 Install [Bundler](https://bundler.io/):
@@ -31,4 +31,4 @@ Under the Interactivity & Shortcuts you can **Create New Shortcut** — add a Gl
 1. Go to Install App in the Slack settings and click the button to install. You will receive a Bot User OAuth Access Token.
 1. Add a `.env` file to your repository with `SLACK_BOT_TOKEN=your_token_here`
 ### Test It!
-Now you should be ready to test it out. In your Slack workspace use the shortcut menu :zap: to select your shortcut. If everything is set up then your app should send you a DM with "Hello, world!"
+Now you should be ready to test it out. In your Slack workspace use the shortcut menu :zap: to select your shortcut. If everything is set up then your app should send you a DM with "Hello, [your name]!"

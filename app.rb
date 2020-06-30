@@ -11,8 +11,9 @@ post '/interactions' do
   payload = JSON.parse(params[:payload], symbolize_names: true)
 
   client = Slack::Web::Client.new
-  channel_id = client.conversations_open(users: payload[:user][:id]).channel.id
-  client.chat_postMessage(channel: channel_id, text: 'Hello, world!')
+  user_id = payload[:user][:id]
+  channel_id = client.conversations_open(users: user_id).channel.id
+  client.chat_postMessage(channel: channel_id, text: "Hello, <@#{user_id}>!")
 
   200
 end
