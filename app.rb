@@ -16,3 +16,8 @@ post '/interactions' do
 
   200
 end
+
+# Use this to verify that your server is running and handling requests.
+get '/' do
+  'Hello, world!'
+end
