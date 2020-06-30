@@ -18,6 +18,8 @@ ruby app.rb
 Visit http://localhost:4567/ to check that it's working.
 
 ## Slack App Setup
+### Create Workspace and App
+Create a new Slack workspace as your sandbox. Once you have the workspace, you can [create your app](https://api.slack.com/apps).
 ### Add Permissions
 For this app to function the Slack app needs the following Bot Token Scopes:
 1. `im:write` — to use `conversations.open` to open a DM
@@ -26,7 +28,7 @@ For this app to function the Slack app needs the following Bot Token Scopes:
 ### Configure Interactive Endpoint
 Under the Slack settings for Interactivity & Shortcuts you need to add a URL where Slack will send requests for interactions. You can use [ngrok](https://ngrok.com/) to set up a URL that points back to your local server. Point it at the `/interactions` endpoint. A full ngrok URL will look something like https://my-subdomain.ngrok.io/interactions.
 ### Add a Global Shortcut
-Under the Interactivity & Shortcuts you can **Create New Shortcut** — add a Global Shortcut with whatever you want for the name and callback ID.
+Under the Interactivity & Shortcuts settings you can **Create New Shortcut** — add a Global Shortcut with whatever you want for the name and callback ID.
 ### Installing
 1. Go to Install App in the Slack settings and click the button to install. You will receive a Bot User OAuth Access Token.
 1. Add a `.env` file to your repository with `SLACK_BOT_TOKEN=your_token_here`
