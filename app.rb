@@ -13,4 +13,6 @@ post '/interactions' do
   client = Slack::Web::Client.new
   channel_id = client.conversations_open(users: payload[:user][:id]).channel.id
   client.chat_postMessage(channel: channel_id, text: 'Hello, world!')
+
+  200
 end
