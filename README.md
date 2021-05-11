@@ -2,7 +2,9 @@
 
 This is a basic app for working with Slack interactions and the Slack Web API. The current implementation posts back "Hello, [your name]!" in response to any interaction.
 
-## Before getting started
+Hi there! This is the template app for the Donut code challenge. In addition to this repo, some other configuration has already happened.
+
+You will have been invited to a slack workspace. A bot has been configured in that workspace, which you will be writing the backend for.
 
 You will have received three values from Donut devs necessary to configure your app.
 
@@ -62,7 +64,7 @@ Next we have to open the tunnel:
 ngrok http -subdomain=<your_ngrok_subdomain_here> 4567
 ```
 
-Now, when you visit `https://<your_ngrok_subdomain_here>.ngrok.io`, traffic will be routed to your locally running instance of this application.
+Now, when you visit `https://<your_ngrok_subdomain_here>.ngrok.io`, or when slack sends requests to it, the traffic will be routed to your locally running instance of this application.
 
 ### With docker
 
@@ -90,11 +92,11 @@ docker compose run --rm api bundle install
 docker compose up
 ```
 
-Now, when you visit `https://<your_ngrok_subdomain_here>.ngrok.io`, traffic will be routed to your locally running instance of this application.
+Now, when you visit `https://<your_ngrok_subdomain_here>.ngrok.io`, or when slack sends requests to it, the traffic will be routed to your locally running instance of this application.
 
 ## Testing end to end
 
-In addition to the configuration values, you will have been invited to a slack workspace. A bot has been configured in that workspace, which you will be writing the backend for.
+Ok! Let's test the slack bot. In slack, go to the workspace you were invited to for this challenge.
 
 The bot is configured with a shortcut, `/donut`. Try typing that into a channel that you & the bot are both in. It should send you a message, which is the result of the boilerplate code already present in this repo, at the `/interactions` endpoint. You should also see log output of the json received from slack on your local machine.
 
