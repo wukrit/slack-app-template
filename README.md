@@ -41,7 +41,7 @@ Open the file in your editor and replace the placeholder slack token with the on
 Use the following command to run your app at http://localhost:4567/:
 
 ```sh
-bundle exec rackup --host 0.0.0.0
+bundle exec rackup --host 0.0.0.0 -p 4567
 ```
 
 Visit <http://localhost:4567/> to check that it's working.
