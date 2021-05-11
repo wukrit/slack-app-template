@@ -1,7 +1,5 @@
 # slack-app-template
 
-This is a basic app for working with Slack interactions and the Slack Web API. The current implementation posts back "Hello, [your name]!" in response to any interaction.
-
 Hi there! This is the template app for the Donut code challenge. In addition to this repo, some other configuration has already happened.
 
 You will have been invited to a slack workspace. A bot has been configured in that workspace, which you will be writing the backend for.
