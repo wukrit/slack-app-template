@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    command: bundle exec rackup --host 0.0.0.0 -p 4567
+    env_file: .env.docker
+    image: donut/code-challenge:dev
+    ports:
+      - "4567:4567"
+    volumes:
+      - .:/mnt/app
+      - donut-gems:/usr/local/bundle
+
+  ngrok:
+    image: wernight/ngrok:latest
+    env_file: .env.docker
+    environment:
+      NGROK_LOOK_DOMAIN: api
+      NGROK_PORT: "4567"
+    ports:
+      - "4040:4040"
+    depends_on:
+      - api
+
+volumes:
+  donut-gems:
