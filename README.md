@@ -71,7 +71,7 @@ We assume that you already have docker installed are familiar with it if you are
 Copy the `.env.docker.example` file.
 
 ```sh
-sp .env.docker.example .env.docker
+cp .env.docker.example .env.docker
 ```
 
 Open the new file in your editor, and replace the placeholder values with the corresponding values provided by Donut. You should end up with three env vars defined, `SLACK_BOT_TOKEN`, `NGROK_AUTH` & `NGROK_SUBDOMAIN`.
