@@ -98,4 +98,4 @@ Ok! Let's test the slack bot. In slack, go to the workspace you were invited to 
 
 The bot is configured with a shortcut, `/donut`. Try typing that into a channel that you & the bot are both in. It should send you a message, which is the result of the boilerplate code already present in this repo, at the `/interactions` endpoint. You should also see log output of the json received from slack on your local machine.
 
-You should be all set to start to work through the project brief! If you have any questions, you have been invited to a personalized help channel in the slack workspace as well. Feel free to pop in and ask questions if you are having a hard time getting anything setup, or would like clarifications on the brief.
+You should be all set to start to work through the project brief! In slack, you have been added to a group DM with some devs who are around to help. Feel free to pop in and ask questions if you are having a hard time getting anything setup, or would like clarifications on the brief.
