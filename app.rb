@@ -133,6 +133,17 @@ module Donut
           task_description: payload[:view][:state][:values][:task_description][:description][:value]
         )
         client.chat_postMessage(params)
+      when 'block_actions'
+        channel_id = payload[:container][:channel_id]
+        owner_id = payload[:actions][0][:value]
+        timestamp = payload[:container][:message_ts]
+        blocks = payload[:message][:blocks]
+
+        blocks[1][:text][:text] = "~#{blocks[1][:text][:text]}~ Completed"
+        blocks[2][:text][:text] = "~#{blocks[2][:text][:text]}~"
+        blocks.pop
+
+        client.chat_update(channel: channel_id, ts: timestamp, blocks: blocks)
       end
 
       200
@@ -184,7 +195,7 @@ module Donut
                   "text": "Mark Completed",
                   "emoji": true
                 },
-                "value": "task_complete",
+                "value": owner_id,
                 "style": "primary",
                 "action_id": "task_complete"
               }
