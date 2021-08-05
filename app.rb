@@ -125,6 +125,14 @@ module Donut
       case payload[:type]
       when 'shortcut'
         client.views_open(trigger_id: payload[:trigger_id], view: TASK_ASSIGNMENT_MODAL_BLOCK)
+      when 'view_submission'
+        params = assign_message_params(
+          owner_id: payload[:user][:id],
+          assignee_id: payload[:view][:state][:values][:assign_task_to][:assignee][:selected_user],
+          task_title: payload[:view][:state][:values][:task_title][:title][:value],
+          task_description: payload[:view][:state][:values][:task_description][:description][:value]
+        )
+        client.chat_postMessage(params)
       end
 
       200
@@ -133,6 +141,41 @@ module Donut
     # Use this to verify that your server is running and handling requests.
     get '/' do
       'Hello, world!'
+    end
+
+    private
+
+    def assign_message_params(owner_id:, assignee_id:, task_title:, task_description:)
+      self_assigned = "You've assigned a new task to yourself." if owner_id == assignee_id
+
+      {
+        "channel": assignee_id,
+        "blocks": [
+          {
+            "type": "context",
+            "elements": [
+              {
+                "type": "mrkdwn",
+                "text": self_assigned || "<@#{owner_id}> has assigned you a new task."
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*#{task_title}*"
+            }
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": task_description
+            }
+          }
+        ]
+      }
     end
   end
 end
