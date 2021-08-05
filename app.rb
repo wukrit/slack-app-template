@@ -29,10 +29,10 @@ module Donut
 
     ###
     #
-    # Task Assignment Modal Payload
+    # Task Assignment Modal Block
     #
     ###
-    TASK_ASSIGNMENT_MODAL_PAYLOAD = {
+    TASK_ASSIGNMENT_MODAL_BLOCK = {
       "type": "modal",
       "title": {
         "type": "plain_text",
@@ -54,7 +54,7 @@ module Donut
           "type": "divider"
         },
         {
-          "block_id": "request_task_from",
+          "block_id": "assign_task_to",
           "type": "input",
           "optional": false,
           "element": {
@@ -64,11 +64,28 @@ module Donut
               "text": "Select a user",
               "emoji": true
             },
-            "action_id": "assignee_id"
+            "action_id": "assignee"
           },
           "label": {
             "type": "plain_text",
             "text": "Assign task to",
+            "emoji": true
+          }
+        },
+        {
+          "block_id": "task_title",
+          "type": "input",
+          "element": {
+            "type": "plain_text_input",
+            "placeholder": {
+              "type": "plain_text",
+              "text": "Enter task title"
+            },
+            "action_id": "title"
+          },
+          "label": {
+            "type": "plain_text",
+            "text": "Task Title",
             "emoji": true
           }
         },
@@ -107,7 +124,7 @@ module Donut
 
       case payload[:type]
       when 'shortcut'
-        client.views_open(trigger_id: payload[:trigger_id], view: TASK_ASSIGNMENT_MODAL_PAYLOAD)
+        client.views_open(trigger_id: payload[:trigger_id], view: TASK_ASSIGNMENT_MODAL_BLOCK)
       end
 
       200
