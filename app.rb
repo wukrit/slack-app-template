@@ -173,6 +173,22 @@ module Donut
               "type": "mrkdwn",
               "text": task_description
             }
+          },
+          {
+            "type": "actions",
+            "elements": [
+              {
+                "type": "button",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Mark Completed",
+                  "emoji": true
+                },
+                "value": "task_complete",
+                "style": "primary",
+                "action_id": "task_complete"
+              }
+            ]
           }
         ]
       }
