@@ -29,6 +29,72 @@ module Donut
 
     ###
     #
+    # Task Assignment Modal Payload
+    #
+    ###
+    TASK_ASSIGNMENT_MODAL_PAYLOAD = {
+      "type": "modal",
+      "title": {
+        "type": "plain_text",
+        "text": "Assign a Task",
+        "emoji": true
+      },
+      "submit": {
+        "type": "plain_text",
+        "text": "Submit",
+        "emoji": true
+      },
+      "close": {
+        "type": "plain_text",
+        "text": "Cancel",
+        "emoji": true
+      },
+      "blocks": [
+        {
+          "type": "divider"
+        },
+        {
+          "block_id": "request_task_from",
+          "type": "input",
+          "optional": false,
+          "element": {
+            "type": "users_select",
+            "placeholder": {
+              "type": "plain_text",
+              "text": "Select a user",
+              "emoji": true
+            },
+            "action_id": "assignee_id"
+          },
+          "label": {
+            "type": "plain_text",
+            "text": "Assign task to",
+            "emoji": true
+          }
+        },
+        {
+          "block_id": "task_description",
+          "type": "input",
+          "element": {
+            "type": "plain_text_input",
+            "multiline": true,
+            "placeholder": {
+              "type": "plain_text",
+              "text": "Enter task description"
+            },
+            "action_id": "description"
+          },
+          "label": {
+            "type": "plain_text",
+            "text": "Description of task:",
+            "emoji": true
+          }
+        }
+      ]
+    }.freeze
+
+    ###
+    #
     # Routes
     #
     ###
@@ -38,9 +104,11 @@ module Donut
       Donut::App.logger.info "\n[+] Payload:\n#{JSON.pretty_generate(payload)}"
 
       client = Slack::Web::Client.new
-      user_id = payload[:user][:id]
-      channel_id = client.conversations_open(users: user_id).channel.id
-      client.chat_postMessage(channel: channel_id, text: "Hello, <@#{user_id}>!")
+
+      case payload[:type]
+      when 'shortcut'
+        client.views_open(trigger_id: payload[:trigger_id], view: TASK_ASSIGNMENT_MODAL_PAYLOAD)
+      end
 
       200
     end
