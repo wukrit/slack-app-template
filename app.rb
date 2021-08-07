@@ -136,6 +136,7 @@ module Donut
       when 'block_actions'
         owner_id = payload[:actions][0][:value]
         assignee_id = payload[:user][:id]
+        task_title = payload[:message][:blocks][1][:text][:text]
 
         update_params = task_complete_update_message_params(
           channel_id: payload[:container][:channel_id],
@@ -149,7 +150,7 @@ module Donut
           message_params = task_complete_message_params(
             owner_id: owner_id,
             assignee_id: assignee_id,
-            task_title: payload[:message][:blocks][1][:text][:text]
+            task_title: task_title
           )
 
           client.chat_postMessage(message_params)
