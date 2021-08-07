@@ -29,6 +29,89 @@ module Donut
 
     ###
     #
+    # Task Assignment Modal Block
+    #
+    ###
+    TASK_ASSIGNMENT_MODAL_BLOCK = {
+      "type": "modal",
+      "title": {
+        "type": "plain_text",
+        "text": "Assign a Task",
+        "emoji": true
+      },
+      "submit": {
+        "type": "plain_text",
+        "text": "Submit",
+        "emoji": true
+      },
+      "close": {
+        "type": "plain_text",
+        "text": "Cancel",
+        "emoji": true
+      },
+      "blocks": [
+        {
+          "type": "divider"
+        },
+        {
+          "block_id": "assign_task_to",
+          "type": "input",
+          "optional": false,
+          "element": {
+            "type": "users_select",
+            "placeholder": {
+              "type": "plain_text",
+              "text": "Select a user",
+              "emoji": true
+            },
+            "action_id": "assignee"
+          },
+          "label": {
+            "type": "plain_text",
+            "text": "Assign task to",
+            "emoji": true
+          }
+        },
+        {
+          "block_id": "task_title",
+          "type": "input",
+          "element": {
+            "type": "plain_text_input",
+            "placeholder": {
+              "type": "plain_text",
+              "text": "Enter task title"
+            },
+            "action_id": "title"
+          },
+          "label": {
+            "type": "plain_text",
+            "text": "Task Title",
+            "emoji": true
+          }
+        },
+        {
+          "block_id": "task_description",
+          "type": "input",
+          "element": {
+            "type": "plain_text_input",
+            "multiline": true,
+            "placeholder": {
+              "type": "plain_text",
+              "text": "Enter task description"
+            },
+            "action_id": "description"
+          },
+          "label": {
+            "type": "plain_text",
+            "text": "Description of task:",
+            "emoji": true
+          }
+        }
+      ]
+    }.freeze
+
+    ###
+    #
     # Routes
     #
     ###
@@ -38,9 +121,41 @@ module Donut
       Donut::App.logger.info "\n[+] Payload:\n#{JSON.pretty_generate(payload)}"
 
       client = Slack::Web::Client.new
-      user_id = payload[:user][:id]
-      channel_id = client.conversations_open(users: user_id).channel.id
-      client.chat_postMessage(channel: channel_id, text: "Hello, <@#{user_id}>!")
+
+      case payload[:type]
+      when 'shortcut'
+        client.views_open(trigger_id: payload[:trigger_id], view: TASK_ASSIGNMENT_MODAL_BLOCK)
+      when 'view_submission'
+        params = task_assign_message_params(
+          owner_id: payload[:user][:id],
+          assignee_id: payload[:view][:state][:values][:assign_task_to][:assignee][:selected_user],
+          task_title: payload[:view][:state][:values][:task_title][:title][:value],
+          task_description: payload[:view][:state][:values][:task_description][:description][:value]
+        )
+        client.chat_postMessage(params)
+      when 'block_actions'
+        owner_id = payload[:actions][0][:value]
+        assignee_id = payload[:user][:id]
+        task_title = payload[:message][:blocks][1][:text][:text]
+
+        update_params = task_complete_update_message_params(
+          channel_id: payload[:container][:channel_id],
+          timestamp: payload[:container][:message_ts],
+          blocks: payload[:message][:blocks]
+        )
+
+        client.chat_update(update_params)
+
+        if owner_id != assignee_id
+          message_params = task_complete_message_params(
+            owner_id: owner_id,
+            assignee_id: assignee_id,
+            task_title: task_title
+          )
+
+          client.chat_postMessage(message_params)
+        end
+      end
 
       200
     end
@@ -48,6 +163,80 @@ module Donut
     # Use this to verify that your server is running and handling requests.
     get '/' do
       'Hello, world!'
+    end
+
+    private
+
+    def task_assign_message_params(owner_id:, assignee_id:, task_title:, task_description:)
+      self_assigned = "You've assigned a new task to yourself." if owner_id == assignee_id
+
+      {
+        "channel": assignee_id,
+        "blocks": [
+          {
+            "type": "context",
+            "elements": [
+              {
+                "type": "mrkdwn",
+                "text": self_assigned || "<@#{owner_id}> has assigned you a new task."
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*#{task_title}*"
+            }
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": task_description
+            }
+          },
+          {
+            "type": "actions",
+            "elements": [
+              {
+                "type": "button",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Mark Completed",
+                  "emoji": true
+                },
+                "value": owner_id,
+                "style": "primary",
+                "action_id": "task_complete"
+              }
+            ]
+          }
+        ]
+      }
+    end
+
+    def task_complete_message_params(owner_id:, assignee_id:, task_title:)
+      {
+        "channel": owner_id,
+        "blocks": [
+          {
+            "type": "context",
+            "elements": [
+              {
+                "type": "mrkdwn",
+                "text": "<@#{assignee_id}> has completed the task: #{task_title}",
+              }
+            ]
+          }
+        ]
+      }
+    end
+
+    def task_complete_update_message_params(channel_id:, timestamp:, blocks:)
+      blocks[1][:text][:text] = ":white_check_mark: ~#{blocks[1][:text][:text]}~"
+
+      { channel: channel_id, ts: timestamp, blocks: blocks[0..1] }
     end
   end
 end
