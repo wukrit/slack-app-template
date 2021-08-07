@@ -235,10 +235,8 @@ module Donut
 
     def task_complete_update_message_params(channel_id:, timestamp:, blocks:)
       blocks[1][:text][:text] = ":white_check_mark: ~#{blocks[1][:text][:text]}~"
-      blocks[2][:text][:text] = "~#{blocks[2][:text][:text]}~"
-      blocks.pop
 
-      { channel: channel_id, ts: timestamp, blocks: blocks }
+      { channel: channel_id, ts: timestamp, blocks: blocks[0..1] }
     end
   end
 end
