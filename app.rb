@@ -134,16 +134,26 @@ module Donut
         )
         client.chat_postMessage(params)
       when 'block_actions'
-        channel_id = payload[:container][:channel_id]
         owner_id = payload[:actions][0][:value]
-        timestamp = payload[:container][:message_ts]
-        blocks = payload[:message][:blocks]
+        assignee_id = payload[:user][:id]
 
-        blocks[1][:text][:text] = "~#{blocks[1][:text][:text]}~ Completed"
-        blocks[2][:text][:text] = "~#{blocks[2][:text][:text]}~"
-        blocks.pop
+        update_params = task_complete_update_message_params(
+          channel_id: payload[:container][:channel_id],
+          timestamp: payload[:container][:message_ts],
+          blocks: payload[:message][:blocks]
+        )
 
-        client.chat_update(channel: channel_id, ts: timestamp, blocks: blocks)
+        client.chat_update(update_params)
+
+        if owner_id != assignee_id
+          message_params = task_complete_message_params(
+            owner_id: owner_id,
+            assignee_id: assignee_id,
+            task_title: payload[:message][:blocks][1][:text][:text]
+          )
+
+          client.chat_postMessage(message_params)
+        end
       end
 
       200
@@ -203,6 +213,31 @@ module Donut
           }
         ]
       }
+    end
+
+    def task_complete_message_params(owner_id:, assignee_id:, task_title:)
+      {
+        "channel": owner_id,
+        "blocks": [
+          {
+            "type": "context",
+            "elements": [
+              {
+                "type": "mrkdwn",
+                "text": "<@#{assignee_id}> has completed the task: #{task_title}",
+              }
+            ]
+          }
+        ]
+      }
+    end
+
+    def task_complete_update_message_params(channel_id:, timestamp:, blocks:)
+      blocks[1][:text][:text] = ":white_check_mark: ~#{blocks[1][:text][:text]}~"
+      blocks[2][:text][:text] = "~#{blocks[2][:text][:text]}~"
+      blocks.pop
+
+      { channel: channel_id, ts: timestamp, blocks: blocks }
     end
   end
 end
