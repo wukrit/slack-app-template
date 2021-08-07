@@ -126,7 +126,7 @@ module Donut
       when 'shortcut'
         client.views_open(trigger_id: payload[:trigger_id], view: TASK_ASSIGNMENT_MODAL_BLOCK)
       when 'view_submission'
-        params = assign_message_params(
+        params = task_assign_message_params(
           owner_id: payload[:user][:id],
           assignee_id: payload[:view][:state][:values][:assign_task_to][:assignee][:selected_user],
           task_title: payload[:view][:state][:values][:task_title][:title][:value],
@@ -167,7 +167,7 @@ module Donut
 
     private
 
-    def assign_message_params(owner_id:, assignee_id:, task_title:, task_description:)
+    def task_assign_message_params(owner_id:, assignee_id:, task_title:, task_description:)
       self_assigned = "You've assigned a new task to yourself." if owner_id == assignee_id
 
       {
